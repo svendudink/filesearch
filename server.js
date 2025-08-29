@@ -19,6 +19,7 @@ app.set("views", path.join(__dirname, "templates"));
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const IMAGE_FOLDER = path.join(__dirname, "images");
+const VALID_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"]);
 
 async function imageContainsQuery(imagePath, query) {
   const buffer = await fs.readFile(imagePath);
@@ -31,7 +32,7 @@ async function imageContainsQuery(imagePath, query) {
         role: "user",
         content: [
           { type: "input_text", text: `Does this image contain ${query}? Answer yes or no.` },
-          { type: "input_image", image: imgB64 }
+          { type: "input_image", image_base64: imgB64 }
         ]
       }
     ]
@@ -49,16 +50,14 @@ app.post("/", async (req, res) => {
   const files = await fs.readdir(IMAGE_FOLDER);
   const matches = [];
   for (const file of files) {
+    if (!VALID_EXTENSIONS.has(path.extname(file).toLowerCase())) continue;
     const fullPath = path.join(IMAGE_FOLDER, file);
-    const stat = await fs.stat(fullPath);
-    if (stat.isFile()) {
-      try {
-        if (await imageContainsQuery(fullPath, query)) {
-          matches.push(file);
-        }
-      } catch (err) {
-        console.error(`Error processing ${file}: ${err.message}`);
+    try {
+      if (await imageContainsQuery(fullPath, query)) {
+        matches.push(file);
       }
+    } catch (err) {
+      console.error(`Error processing ${file}: ${err.message}`);
     }
   }
   res.render("index", { matches, query });

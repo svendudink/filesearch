@@ -3,11 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Image Search</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(to bottom right, #ffe6f2, #e6ccff);
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin-top: 40px;
+            font-size: 3em;
+            color: #b30086;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: #b30086;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            display: inline-block;
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Image Search</h1>
+    <h1>Welcome, Your Majesty</h1>
     <form method="post">
-        <input type="text" name="query" placeholder="Describe what you're looking for" value="<%= query %>" required>
+        <input type="text" name="query" placeholder="What do you desire?" value="<%= query %>" required>
         <button type="submit">Search</button>
     </form>
     <% if (matches.length > 0) { %>
